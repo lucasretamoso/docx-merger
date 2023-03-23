@@ -1,7 +1,7 @@
 # Docx-merger
 
 Javascript Library for Merging Docx files.
-This is a fork of https://github.com/apurvaojas/docx-merge with updated dependencies.
+This is a fork of https://github.com/scholarcy/docx-merger with a fix to integrate it with html-to-docx.
 
 It's only been tested with NodeJS but according to the original authors it should work in the browser too.
 
