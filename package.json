@@ -1,6 +1,6 @@
 {
   "name": "@lucasretamoso/docx-merger-fix-html-to-docx",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "license": "Apache-2.0",
   "description": "Javascript Library for Merging Docx file in NodeJS and Browser Environment.",
   "main": "dist/index.cjs.js",
