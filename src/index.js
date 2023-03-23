@@ -64,7 +64,13 @@ class DocxMerger {
             let xmlString = await zip.file("word/document.xml").async('string');
             xmlString = xmlString.substring(xmlString.indexOf("<w:body>") + 8);
             xmlString = xmlString.substring(0, xmlString.indexOf("</w:body>"));
-            xmlString = xmlString.substring(0, xmlString.lastIndexOf("<w:sectPr"));
+            xmlString = xmlString.trim();
+            if (xmlString.lastIndexOf("<w:sectPr") === 0) {
+              let tag = "</w:sectPr>";
+              xmlString = xmlString.substring(xmlString.lastIndexOf(tag) + tag.length);
+            } else {
+              xmlString = xmlString.substring(0, xmlString.lastIndexOf("<w:sectPr"));
+            }
 
             this.insertRaw(xmlString);
             if (this._pageBreak && index < files.length-1)
