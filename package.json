@@ -1,6 +1,6 @@
 {
   "name": "docx-merger",
-  "version": "0.0.0-development",
+  "version": "0.0.1-development",
   "license": "MIT",
   "description": "Javascript Library for Merging Docx file in NodeJS and Browser Environment.",
   "main": "dist/index.js",
@@ -38,9 +38,9 @@
     "xmldom": "^0.1.27"
   },
   "bugs": {
-    "url": "https://github.com/apurvaojas/docx-merger/issues"
+    "url": "https://github.com/lucasretamoso/docx-merger/issues"
   },
-  "homepage": "https://github.com/apurvaojas/docx-merger#readme",
+  "homepage": "https://github.com/lucasretamoso/docx-merger#readme",
   "config": {
     "ghooks": {
       "pre-commit": "npm run validate"
