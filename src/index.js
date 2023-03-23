@@ -63,7 +63,13 @@ function DocxMerger(options, files) {
             var xml = zip.file("word/document.xml").asText();
             xml = xml.substring(xml.indexOf("<w:body>") + 8);
             xml = xml.substring(0, xml.indexOf("</w:body>"));
-            xml = xml.substring(0, xml.lastIndexOf("<w:sectPr"));
+            xml = xml.trim();
+            if (xml.lastIndexOf("<w:sectPr") === 0) {
+                let tag = "</w:sectPr>";
+                xml = xml.substring(xml.lastIndexOf(tag) + tag.length);
+            } else {
+                xml = xml.substring(0, xml.lastIndexOf("<w:sectPr"));
+            }
 
             self.insertRaw(xml);
             if (self._pageBreak && index < files.length-1)
