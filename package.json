@@ -1,5 +1,5 @@
 {
-  "name": "docx-merger",
+  "name": "@lucasretamoso/docx-merger",
   "version": "0.0.1-development",
   "license": "MIT",
   "description": "Javascript Library for Merging Docx file in NodeJS and Browser Environment.",
