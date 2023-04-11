@@ -90,7 +90,7 @@ function DocxMerger(options, files) {
         RelContentType.generateContentTypes(zip, this._contentTypes);
         Media.copyMediaFiles(zip, this._media, this._files);
         RelContentType.generateRelations(zip, this._rel);
-        bulletsNumbering.generateNumbering(zip, this._numbering);
+        bulletsNumbering.generateNumbering(zip, this._numbering, this._files);
         Style.generateStyles(zip, this._style);
 
         zip.file("word/document.xml", xml);
