@@ -4,7 +4,7 @@ var DOMParser = require("xmldom").DOMParser;
 var prepareNumbering = function (files) {
   var serializer = new XMLSerializer();
 
-  files.forEach(function (zip) {
+  files.forEach(function (zip, index) {
     var xmlBin = zip.file("word/numbering.xml");
     if (!xmlBin) {
       return;
