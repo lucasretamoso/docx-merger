@@ -108,6 +108,8 @@ var generateNumbering = function (zip, _numbering, files) {
   );
   styleNumbering = styleNumbering.trim();
 
+  var totalTags = styleNumbering.replace(/ /g, "=").split("=").filter((_, index) => index % 2 !== 0);
+
   files.forEach((file, index) => {
     var xmlBinFile = file.file("word/numbering.xml");
     if (xmlBinFile) {
@@ -131,8 +133,9 @@ var generateNumbering = function (zip, _numbering, files) {
       var tags = xmlFile.split("=");
       tags.forEach((tag, index) => {
         if (index % 2 !== 0) {
-          if (!styleNumbering.includes(tag)) {
-            styleNumbering = `${styleNumbering} ${tag}=${tags[index + 1]}`;
+          if (!totalTags.includes(tag)) {
+            styleNumbering = `${styleNumbering} ${tag}=${tags[index + 1].replace(/>/g, "")}`;
+            totalTags.push(tag);
           }
         }
       });
