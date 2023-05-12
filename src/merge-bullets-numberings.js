@@ -102,15 +102,10 @@ var generateNumbering = function (zip, _numbering, files) {
     return;
   }
   var xml = xmlBin.asText();
-  var styleNumbering = xml.slice(
-    xml.indexOf("<w:numbering") + "<w:numbering".length,
-    xml.indexOf("</w:numbering>") === -1 ? xml.indexOf("/>") : xml.indexOf(">")
-  );
-  styleNumbering = styleNumbering.trim();
+  var styleNumbering = '';
+  var totalTags = [];
 
-  var totalTags = styleNumbering.replace(/ /g, "=").split("=").filter((_, index) => index % 2 !== 0);
-
-  files.forEach((file, index) => {
+  files.forEach((file) => {
     var xmlBinFile = file.file("word/numbering.xml");
     if (xmlBinFile) {
       var xmlFile = xmlBinFile.asText();
@@ -129,10 +124,10 @@ var generateNumbering = function (zip, _numbering, files) {
         xmlFile.indexOf("<w:numbering") + "<w:numbering".length,
         finishIndexToXMLFile
       );
-      xmlFile = xmlFile.replace(/ /g, "=");
+      xmlFile = xmlFile.trim().replace(/ /g, "=");
       var tags = xmlFile.split("=");
       tags.forEach((tag, index) => {
-        if (index % 2 !== 0) {
+        if (index % 2 === 0 && tags[index + 1] && tag) {
           if (!totalTags.includes(tag)) {
             styleNumbering = `${styleNumbering} ${tag}=${tags[index + 1].replace(/>/g, "")}`;
             totalTags.push(tag);
