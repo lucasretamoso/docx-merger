@@ -58,12 +58,20 @@ function DocxMerger(options, files) {
         Style.prepareStyles(files, this._style);
         Style.mergeStyles(files, this._style);
 
+        var numLength = '<w:numId w:val='.length;
+
         files.forEach(function(zip, index) {
             //var zip = new JSZip(file);
             var xml = zip.file("word/document.xml").asText();
             xml = xml.substring(xml.indexOf("<w:body>") + 8);
             xml = xml.substring(0, xml.indexOf("</w:body>"));
             xml = xml.trim();
+            var numId = xml.indexOf('<w:numId w:val=');
+            while (numId !== -1) {
+              var xmlAux = `${xml.substring(0, numId + numLength + 2)}${index.toString()}`;
+              xml = `${xmlAux}${xml.substring(numId + numLength + 2)}`; 
+              numId = xml.indexOf('<w:numId w:val=', numId + 1);
+            }
             if (xml.lastIndexOf("<w:sectPr") === 0) {
                 let tag = "</w:sectPr>";
                 xml = xml.substring(xml.lastIndexOf(tag) + tag.length);
