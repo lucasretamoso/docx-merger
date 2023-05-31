@@ -7,7 +7,11 @@ var prepareStyles = function(files, style) {
     var serializer = new XMLSerializer();
 
     files.forEach(function(zip, index) {
-        var xmlString = zip.file("word/styles.xml").asText();
+        var xmlBin = zip.file("word/styles.xml");
+        if (!xmlBin) {
+            return;
+        }
+        var xmlString = xmlBin.asText();
         var xml = new DOMParser().parseFromString(xmlString, 'text/xml');
         var nodes = xml.getElementsByTagName('w:style');
 
@@ -54,8 +58,11 @@ var prepareStyles = function(files, style) {
 var mergeStyles = function(files, _styles) {
 
     files.forEach(function(zip) {
-
-        var xml = zip.file("word/styles.xml").asText();
+        var xmlBin = zip.file("word/styles.xml");
+        if (!xmlBin) {
+            return;
+        }
+        var xml = xmlBin.asText();
 
         xml = xml.substring(xml.indexOf("<w:style "), xml.indexOf("</w:styles"));
 
@@ -65,30 +72,24 @@ var mergeStyles = function(files, _styles) {
 };
 
 var updateStyleRel_Content = function(zip, fileIndex, styleId) {
-
-
     var xmlString = zip.file("word/document.xml").asText();
     var xml = new DOMParser().parseFromString(xmlString, 'text/xml');
 
     xmlString = xmlString.replace(new RegExp('w:val="' + styleId + '"', 'g'), 'w:val="' + styleId + '_' + fileIndex + '"');
 
-    // zip.file("word/document.xml", "");
-
     zip.file("word/document.xml", xmlString);
 };
 
 var generateStyles = function(zip, _style) {
-    var xml = zip.file("word/styles.xml").asText();
+    var xmlBin = zip.file("word/styles.xml");
+    var xml = "<w:style></w:styles>";
+    if (xmlBin) {
+        xml = xmlBin.asText();
+    }
     var startIndex = xml.indexOf("<w:style ");
     var endIndex = xml.indexOf("</w:styles>");
 
-    // console.log(xml.substring(startIndex, endIndex))
-
     xml = xml.replace(xml.slice(startIndex, endIndex), _style.join(''));
-
-    // console.log(xml.substring(xml.indexOf("</w:docDefaults>")+16, xml.indexOf("</w:styles>")))
-    // console.log(this._style.join(''))
-    // console.log(xml)
 
     zip.file("word/styles.xml", xml);
 };
