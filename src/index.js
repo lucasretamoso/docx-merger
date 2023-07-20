@@ -86,10 +86,48 @@ function DocxMerger(options, files) {
     };
 
     this.save = function(type, callback) {
-
         var zip = this._files[0];
 
         var xml = zip.file("word/document.xml").asText();
+        var style = '';
+        var totalTags = [];
+        this._files.forEach((file) => {
+            var xmlBinFile = file.file("word/document.xml");
+            if (xmlBinFile) {
+                var xmlFile = xmlBinFile.asText();
+                var indexFinishStyleDocument = xmlFile.indexOf("<w:body>");
+                xmlFile = xmlFile.slice(
+                xmlFile.indexOf("<w:document") + "<w:document".length,
+                indexFinishStyleDocument
+                );
+                var ignorable = xmlFile.indexOf("mc:Ignorable");
+                var ignorableText = "";
+                if (ignorable !== -1) {
+                var firstIndexQuotationMarks = xmlFile.indexOf("\"", ignorable);
+                var secondIndexQuotationMarks = xmlFile.indexOf("\"", firstIndexQuotationMarks + 1);
+                ignorableText = xmlFile.slice(ignorable, secondIndexQuotationMarks + 1);
+                xmlFile = `${xmlFile.slice(0, ignorable).trim()}${xmlFile.slice(secondIndexQuotationMarks + 1).trim()}`
+                }
+                xmlFile = xmlFile.trim().replace(/ /g, "=");
+                var tags = xmlFile.split("=");
+                tags.forEach((tag, index) => {
+                if (index % 2 === 0 && tags[index + 1] && tag) {
+                    if (!totalTags.includes(tag)) {
+                        style = `${style} ${tag}=${tags[index + 1].replace(/>/g, "")}`;
+                        totalTags.push(tag);
+                    }
+                }
+                });
+                if (!style.includes("mc:Ignorable")) {
+                    style = `${style} ${ignorableText}`
+                }
+            }
+        });
+        xml = `${xml.slice(
+            0,
+            xml.indexOf("<w:document")
+        )}<w:document ${style}>${xml.slice(xml.indexOf("<w:body>"))}`;
+
         var startIndex = xml.indexOf("<w:body>") + 8;
         var endIndex = xml.lastIndexOf("<w:sectPr");
 
@@ -114,7 +152,6 @@ function DocxMerger(options, files) {
 
 
     if (this._files.length > 0) {
-
         this.mergeBody(this._files);
     }
 }

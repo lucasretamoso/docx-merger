@@ -76,10 +76,6 @@ var prepareNumbering = function (files) {
 };
 
 var mergeNumbering = function (files, _numbering) {
-  // this._builder = this._style;
-
-  // console.log("MERGE__STYLES");
-
   files.forEach(function (zip) {
     var xmlBin = zip.file("word/numbering.xml");
     if (!xmlBin) {
@@ -124,6 +120,14 @@ var generateNumbering = function (zip, _numbering, files) {
         xmlFile.indexOf("<w:numbering") + "<w:numbering".length,
         finishIndexToXMLFile
       );
+      var ignorable = xmlFile.indexOf("mc:Ignorable");
+      var ignorableText = "";
+      if (ignorable !== -1) {
+        var firstIndexQuotationMarks = xmlFile.indexOf("\"", ignorable);
+        var secondIndexQuotationMarks = xmlFile.indexOf("\"", firstIndexQuotationMarks + 1);
+        ignorableText = xmlFile.slice(ignorable, secondIndexQuotationMarks + 1);
+        xmlFile = `${xmlFile.slice(0, ignorable).trim()}${xmlFile.slice(secondIndexQuotationMarks + 1).trim()}`
+      }
       xmlFile = xmlFile.trim().replace(/ /g, "=");
       var tags = xmlFile.split("=");
       tags.forEach((tag, index) => {
@@ -134,6 +138,9 @@ var generateNumbering = function (zip, _numbering, files) {
           }
         }
       });
+      if (!styleNumbering.includes("mc:Ignorable")) {
+        styleNumbering = `${styleNumbering} ${ignorableText}`
+      }
     }
   });
   var xmlGenerated = `${xml.slice(
