@@ -5,7 +5,7 @@ var DOMParser = require('xmldom').DOMParser;
 
 var prepareMediaFiles = function(files, media) {
 
-       var count = 1;
+    var count = 1;
 
     files.forEach(function(zip, index) {
         // var zip = new JSZip(file);
@@ -13,7 +13,6 @@ var prepareMediaFiles = function(files, media) {
 
         for (var mfile in medFiles) {
             if (/^word\/media/.test(mfile) && mfile.length > 11) {
-                // console.log(mfile);
                 media[count] = {};
                 media[count].oldTarget = mfile;
                 media[count].newTarget = mfile.replace(/[0-9]/, '_' + count).replace('word/', "");
@@ -62,9 +61,7 @@ var updateMediaRelations = function(zip, count, _media) {
 };
 
 var updateMediaContent = function(zip, count, _media) {
-
     var xmlString = zip.file("word/document.xml").asText();
-    var xml = new DOMParser().parseFromString(xmlString, 'text/xml');
 
     xmlString = xmlString.replace(new RegExp(_media[count].oldRelID + '"', 'g'), _media[count].oldRelID + '_' + count + '"');
 
